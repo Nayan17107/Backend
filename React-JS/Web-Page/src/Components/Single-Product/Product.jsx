@@ -13,6 +13,7 @@ import visa from "/Img/visa.svg";
 import master from "/Img/mastercard.svg";
 import amex from "/Img/amex.svg";
 import paypal from "/Img/paypal.svg";
+import diners from '/Img/diners.svg'
 import discover from "/Img/discover.svg";
 import "./Product.css";
 
@@ -145,6 +146,7 @@ const SingleProduct = () => {
                             <img src={master} alt="MasterCard" width="40" />
                             <img src={amex} alt="Amex" width="40" />
                             <img src={paypal} alt="PayPal" width="40" />
+                            <img src={diners} alt="Diners" width="40" />
                             <img src={discover} alt="Discover" width="40" />
                         </div>
                         <p className="small text-muted mb-0">
