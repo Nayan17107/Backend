@@ -115,7 +115,6 @@ function MyForm() {
 
                             <Form onSubmit={handalsubmit}>
                                 <Row>
-                                    {/* Category */}
                                     <Col md={6} className="mb-3">
                                         <Form.Label>
                                             Category <span className="text-danger">*</span>
@@ -133,7 +132,6 @@ function MyForm() {
                                         {inputErr.categoryErr ? <Form.Text className="text-danger">{inputErr.categoryErr}</Form.Text> : ""}
                                     </Col>
 
-                                    {/* Name */}
                                     <Col md={6} className="mb-3">
                                         <Form.Label>
                                             Product Name <span className="text-danger">*</span>
@@ -147,7 +145,6 @@ function MyForm() {
                                 </Row>
 
                                 <Row>
-                                    {/* Price */}
                                     <Col md={6} className="mb-3">
                                         <Form.Label>
                                             Price <span className="text-danger">*</span>
@@ -159,7 +156,6 @@ function MyForm() {
                                         {inputErr.priceErr ? <Form.Text className="text-danger">{inputErr.priceErr}</Form.Text> : ""}
                                     </Col>
 
-                                    {/* Stock */}
                                     <Col md={6} className="mb-3">
                                         <Form.Label>
                                             Stock <span className="text-danger">*</span>
@@ -172,7 +168,6 @@ function MyForm() {
                                     </Col>
                                 </Row>
 
-                                {/* Image */}
                                 <Form.Group controlId="image" className="mb-4">
                                     <Form.Label>
                                         Image URL <span className="text-danger">*</span>
@@ -184,7 +179,6 @@ function MyForm() {
                                     {inputErr.imageErr ? <Form.Text className="text-danger">{inputErr.imageErr}</Form.Text> : ""}
                                 </Form.Group>
 
-                                {/* Description */}
                                 <Form.Group controlId="image" className="mb-4">
                                     <Form.Label>
                                         Description <span className="text-danger">*</span>
@@ -196,7 +190,6 @@ function MyForm() {
                                     {inputErr.descriptionErr ? <Form.Text className="text-danger">{inputErr.descriptionErr}</Form.Text> : ""}
                                 </Form.Group>
 
-                                {/* Submit Button */}
                                 <div className="text-center">
                                     <Button type="submit" className="btn border-0 submit-btn p-2 w-50">
                                         Add Product
