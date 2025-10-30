@@ -75,4 +75,5 @@
 
 .categories-row {
     justify-content: center;
+    gap: inherit!important;
 }

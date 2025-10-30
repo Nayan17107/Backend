@@ -5,54 +5,13 @@ import { FaShoppingBag } from "react-icons/fa";
 import img1 from "/img/home-1.jpg";
 import img2 from "/img/home-2.jpg";
 import img3 from "/img/home-3.jpg";
-import img4 from "/img/home-4.jpg";
-import img5 from "/img/home-5.jpg";
-import img6 from "/img/home-6.jpg";
-import img7 from "/img/home-7.jpg";
-import img8 from "/img/home-8.jpg";
-import img9 from "/img/home-9.jpg";
-import img10 from "/img/home-10.jpg";
-import img11 from "/img/home-11.jpg";
-import img12 from "/img/garden-logo.png";
-import img13 from "/img/stool.png";
-
-const categories = [
-    { img: img1, title: "New In", link: "#" },
-    { img: img2, title: "All Water Butts & Tanks", link: "#" },
-    { img: img3, title: "Gifts for Gardeners", link: "#" },
-    { img: img4, title: "Food Waste Solutions", link: "#" },
-    { img: img5, title: "Bestselling Compost Bins", link: "#" },
-    { img: img6, title: "Bokashi Composting Bins", link: "#" },
-    { img: img7, title: "Wormeries", link: "#" },
-    { img: img8, title: "Pots & Planters", link: "#" },
-];
+import img4 from "/img/garden-logo.png";
+import img5 from "/img/stool.png";
 
 function Home() {
     return (
         <div className="shop-category-wrapper pt-5">
             <Container>
-
-                <h2 className="category-title text-center mb-5 fw-bold">
-                    Shop By Category
-                </h2>
-
-                <Row className="g-4 justify-content-center">
-                    {categories.map((cat, index) => (
-                        <Col key={index} xs={12} sm={6} md={3}>
-                            <div className="category-card">
-                                <img src={cat.img} className="category-img" alt={cat.title} />
-                                <h5 className="category-name mt-3 text-center fw-bold">
-                                    {cat.title}
-                                </h5>
-                                <div className="text-center py-3">
-                                    <a href={cat.link} className="shop-now-btn">
-                                        SHOP NOW
-                                    </a>
-                                </div>
-                            </div>
-                        </Col>
-                    ))}
-                </Row>
 
                 <div className="support-section mt-5">
                     <div className="support-item">
@@ -85,7 +44,7 @@ function Home() {
                         <Row className="g-4">
                             <Col sm={6} lg={4}>
                                 <div className="product-card">
-                                    <img src={img9} alt="Tumbler" className="product-image" />
+                                    <img src={img1} alt="Tumbler" className="product-image" />
 
                                     <div className="hover-overlay">
                                         <p className="hover-text">
@@ -108,7 +67,7 @@ function Home() {
 
                             <Col sm={6} lg={4}>
                                 <div className="product-card">
-                                    <img src={img10} alt="Composter" className="product-image" />
+                                    <img src={img2} alt="Composter" className="product-image" />
 
                                     <div className="hover-overlay">
                                         <p className="hover-text">
@@ -130,7 +89,7 @@ function Home() {
 
                             <Col sm={6} lg={4}>
                                 <div className="product-card">
-                                    <img src={img11} alt="Water Butt" className="product-image" />
+                                    <img src={img3} alt="Water Butt" className="product-image" />
 
                                     <div className="hover-overlay">
                                         <p className="hover-text">
@@ -161,7 +120,7 @@ function Home() {
                     <div className="row align-items-center g-4">
                         <div className="col-lg-4 col-md-12 promo-left">
                             <div className="promo-badge">
-                                <img src={img12} alt="badge" />
+                                <img src={img4} alt="badge" />
                                 <span className="badge-text">BEST BUY</span>
                             </div>
 
@@ -174,7 +133,7 @@ function Home() {
 
                         <div className="col-lg-4 col-md-12 promo-center text-center">
                             <img
-                                src={img13}
+                                src={img5}
                                 alt="Compost Converter"
                                 className="promo-product-img"
                             />
@@ -229,7 +188,7 @@ function Home() {
                                     </h5>
                                     <p className="blog-text">
                                         Every year Halloween brings horror stories about the millions of pumpkins that end up in landfill or incineration.
-                                        But it’s easy to become a Halloween hero!
+                                        But it's easy to become a Halloween hero!
                                     </p>
                                 </Col>
                             </Row>
