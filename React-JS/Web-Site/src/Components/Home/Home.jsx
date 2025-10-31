@@ -13,6 +13,20 @@ function Home() {
         <div className="shop-category-wrapper pt-5">
             <Container>
 
+                <div className="hero-banner">
+                    <div className="hero-content">
+                        <h1 className="hero-title">Sustainable Solutions for a Greener Garden</h1>
+                        <p className="hero-subtext">
+                            Explore our range of eco-friendly gardening products and start your journey towards a greener tomorrow.
+                        </p>
+                        <Button className="hero-btn btn-success">SHOP NOW</Button>
+                    </div>
+
+                    <div className="hero-image-wrapper">
+                        <img src="/img/stool.png" alt="Compost Bin" className="hero-image" />
+                    </div>
+                </div>
+
                 <div className="support-section mt-5">
                     <div className="support-item">
                         <FaHandshake className="support-icon" />
