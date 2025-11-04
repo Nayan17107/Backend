@@ -1,11 +1,9 @@
-/* 🔹 Top Bar */
 .top-bar {
     background-color: #275c44;
     color: white;
     font-size: 14px;
 }
 
-/* 🔹 Middle Section */
 .middle-bar {
     background-color: #ffffff;
     border-bottom: 1px solid #eee;
@@ -27,7 +25,6 @@
     object-fit: contain;
 }
 
-/* 🔹 Right Side Icons */
 .search-box {
     cursor: pointer;
     color: #333;
@@ -64,7 +61,6 @@
     right: -10px;
 }
 
-/* 🔹 Navigation Menu */
 .nav-menu {
     background-color: #ffffff;
     text-align: center;
@@ -84,15 +80,13 @@
     color: #2a7550 !important;
 }
 
-/* 🔹 Bottom Bar */
 .bottom-bar {
     background-color: #15392b;
     color: white;
     font-size: 15px;
-    position: relative; /* for absolute centering */
+    position: relative; 
 }
 
-/* 🔹 Responsive */
 @media (max-width: 768px) {
     .top-bar {
         flex-direction: column;
@@ -112,7 +106,6 @@
         font-size: 13px;
     }
 
-    /* Bottom bar responsive */
     .bottom-bar {
         flex-direction: column;
         text-align: center;
