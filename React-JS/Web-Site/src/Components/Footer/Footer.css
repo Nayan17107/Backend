@@ -47,6 +47,13 @@
     margin-top: 8px;
 }
 
+.email-icon {
+    color: #ffffff;
+    font-size: 18px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
 .footer-section hr {
     border-color: rgba(255, 255, 255, 0.2);
     margin: 40px 0 20px;

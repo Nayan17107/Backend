@@ -6,9 +6,40 @@ import img1 from "/img/home-1.jpg";
 import img2 from "/img/home-2.jpg";
 import img3 from "/img/home-3.jpg";
 import img4 from "/img/garden-logo.png";
-import img5 from "/img/stool.png";
+import img5 from "/img/plant.jpg";
+import Card from "../Card Component/Card";
 
 function Home() {
+    const productCard = [
+        {
+            id: 1,
+            img: img1,
+            desc: "Great compost tumbler for small gardens.",
+            tags: ['EASY TO USE', 'INNOVATIVE', 'MODERN'],
+            name: "Maze 245 Litre Compost Tumbler",
+            price: "£239.99",
+            rating: "★★★★★ (5 Reviews)"
+        },
+        {
+            id: 2,
+            img: img2,
+            desc: "Compact, easy to turn.",
+            tags: ['SMART', 'ECO-FRIENDLY', 'STRONG'],
+            name: "Mini Compost Tumbler 120L",
+            price: "£129.50",
+            rating: "★★★★☆ (12 Reviews)"
+        },
+        {
+            id: 3,
+            img: img3,
+            desc: "Large capacity for bigger gardens.",
+            tags: ['WATER SAVER', 'GREEN', 'DOUBLE KIT'],
+            name: "Pro Compost 400L",
+            price: "£349.00",
+            rating: "★★★★☆ (22 Reviews)"
+        },
+    ];
+
     return (
         <div className="shop-category-wrapper pt-5">
             <Container>
@@ -56,74 +87,18 @@ function Home() {
 
                     <Col md={9}>
                         <Row className="g-4">
-                            <Col sm={6} lg={4}>
-                                <div className="product-card">
-                                    <img src={img1} alt="Tumbler" className="product-image" />
-
-                                    <div className="hover-overlay">
-                                        <p className="hover-text">
-                                            Complete with two composting chambers, air vents and a reinforced
-                                            barrel, the sturdy Maze Compost Tumbler keeps things fresh…
-                                        </p>
-                                        <div className="tags">
-                                            <span>EASY TO USE</span>
-                                            <span>INNOVATIVE</span>
-                                            <span>MODERN</span>
-                                        </div>
-                                        <button className="quick-add-btn">QUICK ADD</button>
-                                    </div>
-
-                                    <p className="product-name mt-3">Maze 245 Litre Compost Tumbler</p>
-                                    <p className="price">£239.99</p>
-                                    <p className="rating">★★★★★ <span>(5 Reviews)</span></p>
-                                </div>
-                            </Col>
-
-                            <Col sm={6} lg={4}>
-                                <div className="product-card">
-                                    <img src={img2} alt="Composter" className="product-image" />
-
-                                    <div className="hover-overlay">
-                                        <p className="hover-text">
-                                            A powerful food waste composter designed for all-year-round efficiency.
-                                        </p>
-                                        <div className="tags">
-                                            <span>SMART</span>
-                                            <span>ECO-FRIENDLY</span>
-                                            <span>STRONG</span>
-                                        </div>
-                                        <button className="quick-add-btn">QUICK ADD</button>
-                                    </div>
-
-                                    <p className="product-name mt-3">Green Johanna Food Waste Composter</p>
-                                    <p className="price">£124.99</p>
-                                    <p className="rating">★★★★★ <span>(3 Reviews)</span></p>
-                                </div>
-                            </Col>
-
-                            <Col sm={6} lg={4}>
-                                <div className="product-card">
-                                    <img src={img3} alt="Water Butt" className="product-image" />
-
-                                    <div className="hover-overlay">
-                                        <p className="hover-text">
-                                            Save rainwater effortlessly with durable, space-saving storage.
-                                        </p>
-                                        <div className="tags">
-                                            <span>WATER SAVER</span>
-                                            <span>GREEN</span>
-                                            <span>DOUBLE KIT</span>
-                                        </div>
-                                        <button className="quick-add-btn">QUICK ADD</button>
-                                    </div>
-
-                                    <p className="product-name mt-3">
-                                        Mini Rainsaver 100 Litre Green Water Butt Double Kit
-                                    </p>
-                                    <p className="price">£99.99</p>
-                                    <p className="rating">★★★★★ <span>(65 Reviews)</span></p>
-                                </div>
-                            </Col>
+                            {productCard.map(product => (
+                                <Col key={product.id} sm={6} lg={4}>
+                                    <Card
+                                        img={product.img}
+                                        desc={product.desc}
+                                        tags={product.tags}
+                                        name={product.name}
+                                        price={product.price}
+                                        rating={product.rating}
+                                    />
+                                </Col>
+                            ))}
                         </Row>
                     </Col>
                 </Row>

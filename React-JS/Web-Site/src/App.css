@@ -1,0 +1,27 @@
+.reviews-tab {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    transform-origin: left top;
+    background-color: #034733;
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius:  0 0 6px 6px;
+    letter-spacing: 1px;
+    cursor: default;
+    z-index: 1000;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.reviews-tab:hover {
+    background-color: #026b45;
+    transform: translateY(-50%) rotate(-90deg) scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .reviews-tab {
+        display: none;
+    }
+}

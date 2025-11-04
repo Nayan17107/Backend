@@ -84,8 +84,7 @@ function WaterPage() {
                     <Col xs={12}>
                         <h2 className="section-title">Water Saving</h2>
                         <p className="section-text">
-                            Saving water benefits your garden and the planet. Collect rainwater to keep
-                            plants healthy and reduce your water bill.
+                            Every drop counts. Using rainwater to hydrate your plants not only saves money but also helps protect the environment by reducing reliance on mains water. Water-saving systems allow you to capture, store, and reuse rainwater efficiently — giving your garden the moisture it needs even during dry spells. Start conserving today and grow a garden that’s both beautiful and sustainable.
                         </p>
                     </Col>
                 </Row>

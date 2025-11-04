@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 
 import { SiKlarna, SiGooglepay, SiShopify, SiApplepay } from "react-icons/si";
+import { HiOutlineMail } from "react-icons/hi";
 import "./Footer.css";
 import logo from "../../../img/logo.png";
 
@@ -86,7 +87,8 @@ const Footer = () => {
                     <Col md={4} sm={12}>
                         <h6>GET IN TOUCH</h6>
                         <p>
-                            <strong>Email</strong>
+                            <strong>Email <HiOutlineMail className="email-icon" />
+                            </strong>
                             <br />
                             customer.care@evengreener.com
                         </p>
