@@ -1,0 +1,194 @@
+.gift-section {
+    background-color: #eeeeee;
+}
+
+.gift-img-container {
+    overflow: hidden;
+}
+
+.gift-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.gift-content {
+    color: #1a3d2f;
+}
+
+.gift-title {
+    font-size: 2.2rem;
+    color: #073b2d;
+}
+
+.gift-text {
+    color: #555;
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+.gift-feature {
+    font-size: 1rem;
+    color: #073b2d;
+}
+
+.gift-icon {
+    color: #0b6a46;
+    font-size: 1.4rem;
+}
+
+@media (max-width: 991px) {
+    .gift-content {
+        padding: 2rem 1.5rem;
+        text-align: center;
+    }
+
+    .gift-feature {
+        justify-content: center;
+    }
+
+    .gift-title {
+        font-size: 1.8rem;
+    }
+
+    .gift-text {
+        font-size: 0.95rem;
+    }
+}
+
+.gift-intro {
+    background-color: #f4f7f5;
+    color: #073b2d;
+}
+
+.gift-intro-title {
+    font-size: 2rem;
+    color: #0b6a46;
+}
+
+.gift-intro-text {
+    max-width: 700px;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.7;
+}
+
+@media (max-width: 767px) {
+    .gift-intro-title {
+        font-size: 1.6rem;
+    }
+
+    .gift-intro-text {
+        font-size: 0.95rem;
+        padding: 0 15px;
+    }
+}
+
+.gift-card {
+    position: relative;
+    overflow: hidden;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.gift-product-img-container {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.gift-product-img-container .gift-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.gift-card:hover .gift-img {
+    transform: scale(1.1);
+}
+
+.gift-hover {
+    position: absolute;
+    inset: 0;
+    background: rgba(7, 59, 45, 0.92);
+    color: #fff;
+    opacity: 0;
+    visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    text-align: center;
+    transition: 0.3s ease-in-out;
+}
+
+.gift-card:hover .gift-hover {
+    opacity: 1;
+    visibility: visible;
+}
+
+.gift-desc {
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+}
+
+.gift-line {
+    width: 60%;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    margin: 8px 0;
+}
+
+.gift-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.gift-tag {
+    border: 1px solid #fff;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+}
+
+.gift-btn {
+    border-radius: 30px;
+    font-weight: 600;
+    padding: 8px 25px;
+    letter-spacing: 0.5px;
+}
+
+.gift-info {
+    text-align: left;
+}
+
+.gift-name {
+    font-size: 0.95rem;
+    color: #073b2d;
+    margin-bottom: 3px;
+}
+
+.gift-price {
+    color: #000;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 767px) {
+    .gift-hover {
+        padding: 10px;
+    }
+
+    .gift-desc {
+        font-size: 0.8rem;
+    }
+
+    .gift-btn {
+        font-size: 0.8rem;
+        padding: 6px 18px;
+    }
+}

@@ -73,9 +73,6 @@ function Header() {
                             GARDENING
                         </Nav.Link>
                         <Nav.Link as={Link} to="/" className="menu-link">
-                            IN THE HOME
-                        </Nav.Link>
-                        <Nav.Link as={Link} to="/" className="menu-link">
                             GIFTS
                         </Nav.Link>
                         <Nav.Link as={Link} to="/" className="menu-link">

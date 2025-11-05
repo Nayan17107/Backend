@@ -7,15 +7,19 @@ import Home from './Components/Home/Home.jsx';
 import Garden from './Components/Garden-comp/Garden.jsx';
 import FoodWasteComp from './Components/Food-Waste/Food.jsx';
 import WaterPage from './Components/Water/Water.jsx';
+import Blog from './Components/Blog/Blog.jsx';
+import Gift from './Components/Gift/Gift.jsx';
 
 function App() {
   return (
     <>
       <Header/>
-      {/* <Home/>  */}
+      <Home/> 
       {/* <Garden/> */}
       {/* <FoodWasteComp/> */}
       {/* <WaterPage/> */}
+      {/* <Blog/> */}
+      {/* <Gift/> */}
       <Contact/>
       <Footer/>
 
