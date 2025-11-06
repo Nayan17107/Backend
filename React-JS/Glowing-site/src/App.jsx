@@ -22,7 +22,6 @@ function App() {
         <Route path='/aboutus' element={<About />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/faq' element={<h2>Faq Page</h2>} />
-
         <Route path='blog-left-sidebar' element={<BlogSiderbar />} />
         <Route path='blog-with-sidebar' element={<WithSidebar />} />
       </Routes>
