@@ -60,22 +60,22 @@ function Header() {
             <div className="nav-menu py-2">
                 <Container>
                     <Nav className="justify-content-center flex-wrap gap-3 fw-bold small">
-                        <Nav.Link as={Link} to="/" className="menu-link">
+                        <Nav.Link as={Link} to="/Garden" className="menu-link">
                             GARDEN COMPOSTING
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/" className="menu-link">
+                        <Nav.Link as={Link} to="/FoodWasteComp" className="menu-link">
                             FOOD WASTE COMPOSTING
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/" className="menu-link">
+                        <Nav.Link as={Link} to="/WaterPage" className="menu-link">
                             WATER SAVING
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/" className="menu-link">
+                        <Nav.Link as={Link} to="/Gardening" className="menu-link">
                             GARDENING
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/" className="menu-link">
+                        <Nav.Link as={Link} to="/Blog" className="menu-link">
                             GIFTS
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/" className="menu-link">
+                        <Nav.Link as={Link} to="/Gift" className="menu-link">
                             BLOGS
                         </Nav.Link>
                     </Nav>
