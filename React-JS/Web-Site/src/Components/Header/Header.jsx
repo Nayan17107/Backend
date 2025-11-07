@@ -72,10 +72,10 @@ function Header() {
                         <Nav.Link as={Link} to="/Gardening" className="menu-link">
                             GARDENING
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/Blog" className="menu-link">
+                        <Nav.Link as={Link} to="/Gift" className="menu-link">
                             GIFTS
                         </Nav.Link>
-                        <Nav.Link as={Link} to="/Gift" className="menu-link">
+                        <Nav.Link as={Link} to="/Blog" className="menu-link">
                             BLOGS
                         </Nav.Link>
                     </Nav>
