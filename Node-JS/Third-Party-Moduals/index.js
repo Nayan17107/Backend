@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/home', (req, res) => {
-    res.end("Welcome to Home-Page")
+    res.render('index')
 })
 
 app.listen(port, () => {
