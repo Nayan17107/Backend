@@ -5,7 +5,7 @@ const app = express()
 app.set('view engine', 'ejs');
 app.use(express.urlencoded());
 
-const students = [
+let students = [
     {
         id : "1",
         name : "Prajapati Nayan",
@@ -37,8 +37,16 @@ app.get('/', (req, res) => {
 })
 
 app.post('/add-student', (req, res) =>{
+    // console.log(req.body)
     students.push(req.body);
-    console.log(req.body)
+    return res.redirect('/')
+})
+
+app.get('/delete-student/:id', (req, res) => {
+    // console.log(req.params.id);
+    const id = req.params.id
+
+    students = students.filter(stud => stud.id !== id)
     return res.redirect('/')
 })
 
