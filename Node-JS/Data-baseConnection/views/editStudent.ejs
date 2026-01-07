@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <center>
+        <h2>Edit Student Details</h2>
+        <form action="/update-student/<%= student.id %>" method="post" enctype="multipart/form-data">
+            <table border="1" cellpadding="5">
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" name="name" value="<%= student.name %>" /></td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="text" name="email" value="<%= student.email %>" /></td>
+                </tr>
+                <tr>
+                    <td>Class:</td>
+                    <td><input type="text" name="classNo" value="<%= student.classNo %>" /></td>
+                </tr>
+                <tr>
+                    <td>Gender:</td>
+                    <td>
+                        <input type="radio" name="gender" value="Male" <%= student.gender == 'Male' ? 'checked' : '' %> />Male
+                        <input type="radio" name="gender" value="Female" <%= student.gender == 'Female' ? 'checked' : '' %> />Female
+                    </td>
+                </tr>
+                <tr>
+                    <td>MobileNo:</td>
+                    <td><input type="text" name="mobileNo" value="<%= student.mobileNo %>" /></td>
+                </tr>
+                <tr>
+                    <td>Course:</td>
+                    <td><input type="text" name="course" value="<%= student.course %>" /></td>
+                </tr>
+                <tr>
+                    <td>ProfileImage:</td>
+                    <td><input type="file" name="profileImage" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Update Student" /></td>
+                </tr>
+            </table>
+        </form>
+    </center>
+</body>
+</html>
