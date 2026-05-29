@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <center>
+        <h2>Add Student Details</h2>
+        <form action="/add-student" method="post" enctype="multipart/form-data">
+            <table border="1" cellpadding="5">
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" name="name" /></td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td><input type="text" name="email" /></td>
+                </tr>
+                <tr>
+                    <td>Class:</td>
+                    <td><input type="text" name="classNo" /></td>
+                </tr>
+                <tr>
+                    <td>Gender:</td>
+                    <td>
+                        <input type="radio" name="gender" value="Male" />Male
+                        <input type="radio" name="gender" value="Female" />Female
+                    </td>
+                </tr>
+                <tr>
+                    <td>MobileNo:</td>
+                    <td><input type="text" name="mobileNo" /></td>
+                </tr>
+                <tr>
+                    <td>Course:</td>
+                    <td><input type="text" name="course" /></td>
+                </tr>
+                <tr>
+                    <td>ProfileImage:</td>
+                    <td><input type="file" name="profileImage" /></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Add Student" /></td>
+                </tr>
+            </table>
+        </form>
+        <hr/>
+        <h2>Student Details</h2>
+        <table border="1" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>MobileNo</th>
+                    <th>Gender</th>
+                    <th>Class</th>
+                    <th>Course</th>
+                    <th>ProfileImage</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% students.forEach((student, i) => { %>
+                    <tr>
+                        <td><%= i+1 %></td>
+                        <td><%= student.name %></td>
+                        <td><%= student.email %></td>
+                        <td><%= student.mobileNo %></td>
+                        <td><%= student.gender %></td>
+                        <td><%= student.classNo %></td>
+                        <td><%= student.course %></td>
+                        <td><img src="<%= student.profileImage %>" width="100" /></td>
+                        <td><a href="/edit-student/<%= student.id %>">Edit</a></td>
+                        <td><a href="/delete-student/<%= student.id %>">Delete</a></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </center>
+</body>
+</html>
