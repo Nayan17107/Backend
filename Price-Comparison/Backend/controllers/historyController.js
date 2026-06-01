@@ -15,34 +15,36 @@ const getHistory = async (_req, res, next) => {
   }
 };
 
-// Generate mock historical data for a given price with slight variations
-const generateMockHistory = (currentPrice, days = 90) => {
-  const data = [];
-  const now = new Date();
-  const startDate = new Date(now);
-  startDate.setDate(startDate.getDate() - days);
-
-  // Simulate a gradual price decrease with random variations - create daily data points
-  let price = currentPrice * 1.15; // Start 15% higher
-  for (let i = 0; i <= days; i += 3) {  // Create data point every 3 days for better detail
-    const date = new Date(startDate);
-    date.setDate(date.getDate() + i);
-    const variation = (Math.random() - 0.5) * 0.08 * currentPrice; // 8% random variation
-    price = Math.max(currentPrice * 0.95, price - currentPrice * 0.007 + variation);
-    data.push({
-      date,
-      price: Math.round(price)
-    });
-  }
-  return data;
-};
-
-// Format date as "DD Mon"
 const formatChartDate = (date) => {
   const d = new Date(date);
   const day = String(d.getDate()).padStart(2, "0");
   const month = d.toLocaleDateString("en-IN", { month: "short" });
   return `${day} ${month}`;
+};
+
+// Only track these specific stores
+const ALLOWED_STORES = [
+  "amazon",
+  "flipkart",
+  "cashify",
+  "reliance digital",
+  "vijay sales",
+];
+
+const STORE_LABELS = {
+  amazon: "Amazon",
+  flipkart: "Flipkart",
+  cashify: "Cashify",
+  "reliance digital": "Reliance Digital",
+  "vijay sales": "Vijay Sales",
+};
+
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const dayKeyOf = (d) => {
+  const dt = new Date(d);
+  dt.setHours(0, 0, 0, 0);
+  return dt.getTime(); // stable numeric day key
 };
 
 const getPriceHistoryChart = async (req, res, next) => {
@@ -51,136 +53,256 @@ const getPriceHistoryChart = async (req, res, next) => {
       return res.status(503).json({ message: "Database not connected" });
     }
 
-    const query = String(req.query.query || "").trim().toLowerCase();
-    const days = parseInt(req.query.days || "90", 10);
+    const query = String(req.query.query || "")
+      .trim()
+      .toLowerCase();
+
+    const days = Number(req.query.days || 90);
+    if (!Number.isFinite(days) || days <= 0) {
+      return res
+        .status(400)
+        .json({ message: "days must be a positive number" });
+    }
 
     if (!query) {
       return res.status(400).json({ message: "Query parameter is required" });
     }
 
-    if (days < 7) {
-      return res.status(400).json({ message: "Days must be at least 7" });
-    }
-
+    // Chart window start
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // Get real price history data
-    const historyDocs = await PriceHistory.find({
-      productQuery: query,
-      recordedAt: { $gte: startDate }
+    // Fetch more data for LOCF continuity (buffer before chart window)
+    const fetchBufferDays = 30;
+    const fetchStartDate = new Date();
+    fetchStartDate.setDate(fetchStartDate.getDate() - fetchBufferDays);
+
+    // Base regex used for exact/partial match
+    const exactRegex = `^${escapeRegex(query)}$`;
+    const partialRegex = escapeRegex(query);
+
+    const historyDocsExact = await PriceHistory.find({
+      productQuery: { $regex: exactRegex, $options: "i" },
+      store: { $in: ALLOWED_STORES },
     }).sort({ recordedAt: 1 });
 
-    // Group by store
-    const storeData = {};
+    let historyDocs = historyDocsExact;
+
+    // If no exact matches, try partial matches (pick query with most points)
+    if (!historyDocs || historyDocs.length === 0) {
+      const partialDocs = await PriceHistory.find({
+        productQuery: { $regex: partialRegex, $options: "i" },
+        store: { $in: ALLOWED_STORES },
+      }).sort({ recordedAt: 1 });
+
+      if (partialDocs && partialDocs.length > 0) {
+        const groupedByQuery = {};
+        partialDocs.forEach((doc) => {
+          if (!groupedByQuery[doc.productQuery])
+            groupedByQuery[doc.productQuery] = [];
+          groupedByQuery[doc.productQuery].push(doc);
+        });
+
+        let bestMatch = null;
+        let maxEntries = 0;
+        Object.entries(groupedByQuery).forEach(([pq, docs]) => {
+          if (docs.length > maxEntries) {
+            maxEntries = docs.length;
+            bestMatch = pq;
+          }
+        });
+
+        historyDocs = bestMatch ? groupedByQuery[bestMatch] : [];
+      }
+    }
+
+    if (!historyDocs || historyDocs.length === 0) {
+      return res.json({
+        stores: [],
+        data: [],
+        lowest: null,
+        message: "No price history found",
+      });
+    }
+
+    // Deduplicate to one price per (store, day)
+    const dayPriceMap = {}; // store -> Map(dayKey -> {price, recordedAt})
+
     let lowestPrice = Number.MAX_SAFE_INTEGER;
     let lowestStore = "";
     let lowestDate = null;
 
     historyDocs.forEach((doc) => {
-      if (!storeData[doc.store]) {
-        storeData[doc.store] = [];
+      if (!ALLOWED_STORES.includes(doc.store)) return;
+      if (doc.recordedAt < fetchStartDate) return;
+
+      const store = doc.store;
+      const dKey = dayKeyOf(doc.recordedAt);
+
+      if (!dayPriceMap[store]) dayPriceMap[store] = new Map();
+      const storeDayMap = dayPriceMap[store];
+
+      const existing = storeDayMap.get(dKey);
+      // keep latest recordedAt of that day
+      if (!existing || doc.recordedAt >= existing.recordedAt) {
+        storeDayMap.set(dKey, { price: doc.price, recordedAt: doc.recordedAt });
       }
-      storeData[doc.store].push({
-        date: doc.recordedAt,
-        price: doc.price
-      });
 
       if (doc.price < lowestPrice) {
         lowestPrice = doc.price;
-        lowestStore = doc.store;
+        lowestStore = store;
         lowestDate = doc.recordedAt;
       }
     });
 
+    // Materialize storeData sorted by date
+    let storeData = {};
+    Object.entries(dayPriceMap).forEach(([store, map]) => {
+      const entries = Array.from(map.entries())
+        .map(([dKey, v]) => ({ date: new Date(Number(dKey)), price: v.price }))
+        .sort((a, b) => a.date - b.date);
+
+      // remove consecutive duplicates
+      const deduped = [];
+      for (const e of entries) {
+        const last = deduped[deduped.length - 1];
+        if (!last || last.price !== e.price) deduped.push(e);
+      }
+
+      storeData[store] = deduped;
+    });
+
     const stores = Object.keys(storeData);
-
-    // If insufficient data, generate mock data for visualization
-    if (historyDocs.length < 7) {
-      const mockStores = ["flipkart", "amazon", "croma"];
-      const mockData = {};
-
-      mockStores.forEach((store) => {
-        if (storeData[store]) {
-          mockData[store] = storeData[store];
-        } else {
-          // Generate realistic mock data based on average current price
-          const avgPrice = Math.round(
-            historyDocs.reduce((sum, doc) => sum + doc.price, 0) / Math.max(1, historyDocs.length)
-          ) || 50000;
-          mockData[store] = generateMockHistory(avgPrice, days);
-        }
-      });
-
-      storeData = mockData;
-      stores = Object.keys(mockData);
-
-      // Find lowest in mock data
-      Object.entries(mockData).forEach(([store, pricePoints]) => {
-        pricePoints.forEach((point) => {
-          if (point.price < lowestPrice) {
-            lowestPrice = point.price;
-            lowestStore = store;
-            lowestDate = point.date;
-          }
-        });
+    if (stores.length === 0) {
+      return res.json({
+        stores: [],
+        data: [],
+        lowest: null,
+        message: "No price data found in time range",
       });
     }
 
-    // Create unified timeline with all dates
-    const allDates = new Set();
-    Object.values(storeData).forEach((prices) => {
-      prices.forEach((p) => {
-        allDates.add(new Date(p.date).toDateString());
+    // Determine actual chart start (use later of requested start or first record)
+    const allDates = [];
+    stores.forEach((store) => {
+      storeData[store].forEach((entry) => {
+        allDates.push(new Date(entry.date));
       });
     });
 
-    const sortedDates = Array.from(allDates)
-      .map((d) => new Date(d))
-      .sort((a, b) => a - b);
+    const firstRecordDate = new Date(Math.min(...allDates));
+    const chartStartDate = new Date(
+      Math.max(startDate.getTime(), firstRecordDate.getTime()),
+    );
 
-    // Create chart data with interpolation
-    const chartData = sortedDates.map((d) => {
-      const row = { date: formatChartDate(d) };
+    // Generate daily dates between chartStartDate and today
+    const sortedDates = [];
+    const tempDate = new Date(chartStartDate);
+    const today = new Date();
+    tempDate.setHours(0, 0, 0, 0);
+    today.setHours(23, 59, 59, 999);
+
+    while (tempDate <= today) {
+      sortedDates.push(new Date(tempDate));
+      tempDate.setDate(tempDate.getDate() + 1);
+    }
+
+    // Build chart series using LOCF
+    const chartData = [];
+    const storePointers = {};
+    const lastKnownPrices = {};
+
+    stores.forEach((store) => {
+      storePointers[store] = 0;
+      lastKnownPrices[store] = null;
+    });
+
+    sortedDates.forEach((d) => {
+      const row = { date: formatChartDate(d), _timestamp: d.getTime() };
+      let hasAnyPrice = false;
 
       stores.forEach((store) => {
         const prices = storeData[store];
-        const nearestPrice = prices.reduce((nearest, p) => {
-          const pDate = new Date(p.date);
-          const nearestDate = new Date(nearest.date);
-          return Math.abs(pDate - d) < Math.abs(nearestDate - d) ? p : nearest;
-        });
-        row[store] = nearestPrice.price;
+
+        while (
+          storePointers[store] < prices.length &&
+          dayKeyOf(prices[storePointers[store]].date) === dayKeyOf(d)
+        ) {
+          lastKnownPrices[store] = prices[storePointers[store]].price;
+          storePointers[store]++;
+        }
+
+        const normalizedStoreName = STORE_LABELS[store] || store;
+        const currentPrice = lastKnownPrices[store];
+        row[normalizedStoreName] = currentPrice !== null ? currentPrice : null;
+        if (currentPrice !== null) hasAnyPrice = true;
       });
 
-      return row;
+      if (hasAnyPrice) chartData.push(row);
     });
 
-    // Normalize store names to proper labels
-    const storeLabels = {
-      amazon: "Amazon",
-      flipkart: "Flipkart",
-      croma: "Croma",
-      myntra: "Myntra",
-      cashify: "Cashify",
-      "reliance digital": "Reliance Digital",
-      "vijay sales": "Vijay Sales",
-      "tata cliq": "Tata CLiQ",
-      "google shopping": "Google Shopping"
+    // Remove duplicate consecutive rows
+    const filteredChartData = [];
+    for (let i = 0; i < chartData.length; i++) {
+      const currentRow = chartData[i];
+      const previousRow = chartData[i - 1];
+
+      if (i === 0) {
+        filteredChartData.push(currentRow);
+        continue;
+      }
+
+      let isDifferent = false;
+      stores.forEach((store) => {
+        const normalizedName = STORE_LABELS[store] || store;
+        if (currentRow[normalizedName] !== previousRow[normalizedName]) {
+          isDifferent = true;
+        }
+      });
+
+      if (isDifferent || i === chartData.length - 1) {
+        filteredChartData.push(currentRow);
+      } else if (filteredChartData.length > 0) {
+        filteredChartData[filteredChartData.length - 1] = currentRow;
+      }
+    }
+
+    // Ensure at least 2 points
+    if (filteredChartData.length < 2 && chartData.length >= 2) {
+      filteredChartData.length = 0;
+      filteredChartData.push(chartData[0]);
+      filteredChartData.push(chartData[chartData.length - 1]);
+    }
+
+    const normalizedStores = stores.map((s) => STORE_LABELS[s] || s);
+    const normalizedLowestStore = STORE_LABELS[lowestStore] || lowestStore;
+
+    const response = {
+      stores: normalizedStores,
+      data: filteredChartData,
+      lowest:
+        lowestPrice === Number.MAX_SAFE_INTEGER
+          ? null
+          : {
+              price: lowestPrice,
+              store: normalizedLowestStore,
+              date: formatChartDate(lowestDate || new Date()),
+            },
+      query,
+      priceRanges: stores.reduce((acc, store) => {
+        const prices = storeData[store];
+        if (prices && prices.length > 0) {
+          acc[STORE_LABELS[store] || store] = {
+            min: Math.min(...prices.map((p) => p.price)),
+            max: Math.max(...prices.map((p) => p.price)),
+            points: prices.length,
+          };
+        }
+        return acc;
+      }, {}),
     };
 
-    const normalizedStores = stores.map((s) => storeLabels[s] || s);
-    const normalizedLowestStore = storeLabels[lowestStore] || lowestStore;
-
-    return res.json({
-      stores: normalizedStores,
-      data: chartData,
-      lowest: {
-        price: lowestPrice,
-        store: normalizedLowestStore,
-        date: formatChartDate(lowestDate || new Date())
-      }
-    });
+    return res.json(response);
   } catch (error) {
     return next(error);
   }

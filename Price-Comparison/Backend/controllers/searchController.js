@@ -24,12 +24,16 @@ const saveSearch = async (query, resultCount) => {
 const savePriceHistory = async (query, products) => {
   if (mongoose.connection.readyState !== 1 || !products || products.length === 0) return;
   
-  const historyDocs = products.map((product) => ({
-    productQuery: query.toLowerCase().trim(),
-    store: product.source ? product.source.toLowerCase().trim() : "unknown",
-    price: product.numericPrice || 0,
-    recordedAt: new Date()
-  }));
+  const historyDocs = products
+    .filter((product) => Number(product.numericPrice) > 0)
+    .map((product) => ({
+      productQuery: query.toLowerCase().trim(),
+      store: product.source ? product.source.toLowerCase().trim() : "unknown",
+      price: product.numericPrice,
+      recordedAt: new Date()
+    }));
+
+  if (historyDocs.length === 0) return;
 
   await PriceHistory.insertMany(historyDocs).catch((error) =>
     console.error(`Price history save failed: ${error.message}`)

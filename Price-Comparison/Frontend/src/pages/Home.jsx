@@ -3,38 +3,45 @@ import SearchBar from "../components/SearchBar.jsx";
 
 const suggestions = ["iPhone 15 Pro", 'Samsung 65" TV', "boAt Earbuds", "Nike Air Max", "Laptop under Rs.50,000"];
 const floatingCards = [
-  { store: "Flipkart", logo: "https://1000logos.net/wp-content/uploads/2021/02/Flipkart-logo.png", price: "Rs.52,999", x: "2%", y: "28%", rotate: "-4deg", color: "#2563eb"},
-  { store: "Amazon", logo: "https://1000logos.net/wp-content/uploads/2016/10/Amazon-Logo-768x432.png", price: "Rs.49,999", x: "84%", y: "27%", rotate: "6deg", color: "#f59e0b" },
-  { store: "Croma", logo: "https://cdn.iconscout.com/icon/free/png-512/free-croma-icon-svg-download-png-10673445.png?f=webp&w=512", price: "Rs.54,490", x: "5%", y: "74%", rotate: "-3deg", color: "#22c55e" }
+  { store: "Flipkart", icon: "🛒", price: "Rs.52,999", delivery: "Free delivery", x: "2%", y: "28%", rotate: "-4deg", color: "#2f80ff" },
+  { store: "Amazon", icon: "📦", price: "Rs.49,999", delivery: "Prime delivery", badge: "Lowest", x: "84%", y: "27%", rotate: "6deg", color: "#fb923c" },
+  { store: "Croma", icon: "🏬", price: "Rs.54,490", delivery: "Express delivery", x: "5%", y: "74%", rotate: "-3deg", color: "#22c55e" }
 ];
 
-const FloatingCard = ({ card, index }) => (
+const DealCard = ({ card, floating = false, index = 0 }) => (
   <div
-    className="float-card absolute hidden w-[200px] rounded-[22px] border bg-[#101827]/90 p-4 shadow-2xl backdrop-blur md:block"
-    style={{
-      left: card.x,
-      top: card.y,
-      "--rotate": card.rotate,
-      animationDelay: `${index * 0.6}s`,
-      borderColor: `${card.color}55`
-    }}
+    className={`${floating ? "float-card absolute hidden w-[200px] lg:block" : "w-full"} rounded-[18px] border bg-[#111827]/92 p-4 text-left shadow-2xl backdrop-blur`}
+    style={
+      floating
+        ? {
+            left: card.x,
+            top: card.y,
+            "--rotate": card.rotate,
+            animationDelay: `${index * 0.6}s`,
+            borderColor: `${card.color}55`
+          }
+        : { borderColor: `${card.color}66` }
+    }
   >
-    <div className="mb-3 aspect-[16/9] rounded-xl border border-white/15 bg-[#0a0f1a] flex items-center justify-center overflow-hidden">
-      <img 
-        src={card.logo} 
-        alt={`${card.store} logo`} 
-        className={`h-full w-full object-contain ${card.store === "Amazon" ? "invert brightness-0" : ""} ${card.store === "Croma" ? "p-0 scale-110" : "p-2"}`}
-        // onError={(e) => {
-        //   // e.target.style.display = 'none';
-        // }}
-      />
+    <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base" style={{ backgroundColor: `${card.color}24` }}>
+          {card.icon}
+        </span>
+        <span className="truncate text-sm font-black text-white/58">{card.store}</span>
+      </div>
+      {card.badge && (
+        <span className="rounded-full border border-cyan-400/45 bg-cyan-400/12 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-300">
+          {card.badge}
+        </span>
+      )}
     </div>
-    <span className="inline-flex items-center gap-2 rounded-lg border px-3 py-1 text-sm font-black" style={{ color: card.color, borderColor: `${card.color}66`, background: `${card.color}16` }}>
-      {card.store}
-    </span>
-    <p className="mt-3 font-heading text-2xl font-black" style={{ color: card.color }}>
+    <p className="font-heading text-[26px] font-black leading-none sm:text-[30px]" style={{ color: card.color }}>
       {card.price}
     </p>
+    <div className="mt-4 flex items-center gap-3">
+      <span className="truncate text-xs font-semibold text-white/28">🚚 {card.delivery}</span>
+    </div>
   </div>
 );
 
@@ -45,7 +52,7 @@ const Home = () => (
     <div className="absolute left-1/2 top-[46%] h-[360px] w-[760px] -translate-x-1/2 rounded-full bg-cyan-500/5 blur-3xl" />
 
     {floatingCards.map((card, index) => (
-      <FloatingCard key={card.store} card={card} index={index} />
+      <DealCard key={card.store} card={card} index={index} floating />
     ))}
 
     <div className="relative z-10 mx-auto max-w-6xl text-center">
@@ -92,6 +99,12 @@ const Home = () => (
           >
             {suggestion}
           </a>
+        ))}
+      </div>
+
+      <div className="mx-auto mt-7 hidden max-w-5xl grid-cols-3 gap-3 md:grid lg:hidden">
+        {floatingCards.map((card, index) => (
+          <DealCard key={`tablet-${card.store}`} card={card} index={index} />
         ))}
       </div>
     </div>

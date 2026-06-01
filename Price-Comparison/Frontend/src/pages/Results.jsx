@@ -17,7 +17,7 @@ const Results = () => {
   const { data, loading, error } = useSearch(query);
   const [sort, setSort] = useState("low");
   const [visible, setVisible] = useState(12);
-  const [viewMode, setViewMode] = useState("card"); // "card" or "list"
+  const [viewMode, setViewMode] = useState("card");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [filters, setFilters] = useState({ min: 0, max: 200000, stores: [], inStock: false, rating: 0 });
 
@@ -132,8 +132,8 @@ const Results = () => {
               </div>
             )}
 
-            <div className="mt-7 flex items-center justify-between md:hidden">
-              <button onClick={() => setMobileFiltersOpen(true)} className="rounded-2xl border border-[#27344d] bg-[#111827] px-5 py-3 font-black">
+            <div className="mt-7 flex items-center justify-between lg:hidden">
+              <button onClick={() => setMobileFiltersOpen(true)} className="rounded-2xl border border-[#27344d] bg-[#111827] px-5 py-3 font-black text-white shadow-[0_16px_34px_rgba(0,0,0,0.18)] transition hover:border-cyan-400/40">
                 Filters
               </button>
             </div>
@@ -171,8 +171,8 @@ const Results = () => {
               </div>
             </div>
 
-            <div className="mt-7 grid gap-6 md:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,1fr)]">
-              <div className="hidden md:block md:sticky md:top-[154px] md:h-[calc(100vh-154px)] md:overflow-y-auto md:pr-2">
+            <div className="mt-7 grid gap-6 lg:grid-cols-[240px_minmax(0,1fr)] xl:grid-cols-[270px_minmax(0,1fr)]">
+              <div className="hidden lg:block lg:sticky lg:top-[154px] lg:h-[calc(100vh-154px)] lg:overflow-y-auto lg:pr-2">
                 <FilterPanel filters={filters} setFilters={setFilters} stores={stores} sort={sort} setSort={setSort} />
               </div>
               <div className="min-w-0 space-y-8 pb-8">
@@ -202,7 +202,7 @@ const Results = () => {
                     {viewMode === "list" && (
                       <>
                         <PriceCompareList products={filteredProducts} />
-                        <PriceHistoryChart query={query} />
+                        <PriceHistoryChart query={query} products={filteredProducts} />
                       </>
                     )}
                   </>
