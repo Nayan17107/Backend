@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const API_BASE_URL = ("https://price-comparison-backend-pxez.onrender.com" || "http://localhost:5000").replace(/\/$/, "");
+
 const api = axios.create({
-  baseURL: "https://price-comparison-backend-pxez.onrender.com",
+  baseURL: `https://price-comparison-backend-pxez.onrender.com/api`,
   timeout: 20000
 });
 
@@ -12,7 +14,7 @@ export const searchProducts = async (query) => {
 
 export const getHistory = async () => {
   const { data } = await api.get("/history");
-  return data;
+  return data;  
 };
 
 export const getPriceHistoryChart = async (query, days = 90) => {
