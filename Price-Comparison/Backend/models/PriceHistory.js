@@ -29,7 +29,6 @@ const priceHistorySchema = new mongoose.Schema(
   { versionKey: false }
 );
 
-// Index for efficient queries by productQuery and recordedAt
 priceHistorySchema.index({ productQuery: 1, recordedAt: -1 });
 priceHistorySchema.index({ productQuery: 1, store: 1, recordedAt: -1 });
 

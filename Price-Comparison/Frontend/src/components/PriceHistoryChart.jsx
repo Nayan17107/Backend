@@ -242,40 +242,20 @@ const CustomLegend = ({ stores, activeStores = [], onToggle }) => (
 
 const StatPill = ({ icon, label, value, color }) => (
   <div
-    className="stat-pill"
+    className="stat-pill flex items-center gap-3 rounded-[16px] border-2 p-4 transition sm:gap-4"
     style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 12,
-      background: "rgba(255,255,255,0.03)",
-      border: "1px solid rgba(255,255,255,0.07)",
-      borderRadius: 14,
-      padding: "12px 16px",
-      width: "100%",
-      transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+      borderColor: `${color}50`,
+      background: `${color}15`,
     }}
   >
-    <span style={{ fontSize: 20, flexShrink: 0 }}>{icon}</span>
-    <div style={{ minWidth: 0, flex: 1 }}>
-      <div
-        style={{
-          fontSize: 9,
-          color: "rgba(255,255,255,0.35)",
-          fontWeight: 700,
-          letterSpacing: 0.8,
-          marginBottom: 2,
-        }}
-      >
+    <span className="flex-shrink-0 text-2xl sm:text-3xl">{icon}</span>
+    <div className="min-w-0 flex-1">
+      <div className="mb-1.5 text-xs font-black uppercase tracking-wider text-white/50">
         {label}
       </div>
       <div
-        style={{
-          fontSize: 14,
-          fontWeight: 800,
-          color: color || "#fff",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
+        className="truncate text-base font-black sm:text-lg"
+        style={{ color: color || "#fff" }}
       >
         {value}
       </div>
@@ -286,7 +266,6 @@ const StatPill = ({ icon, label, value, color }) => (
 const buildCurrentSearchChart = (products = []) => {
   const byStore = new Map();
 
-  // Only track the 5 stores we care about
   const allowedStores = [
     "Amazon",
     "Flipkart",
@@ -301,7 +280,6 @@ const buildCurrentSearchChart = (products = []) => {
 
     const store = getStoreMeta(product.source).label;
 
-    // Only include allowed stores
     if (!allowedStores.includes(store)) return;
 
     const current = byStore.get(store);
@@ -338,14 +316,12 @@ export default function PriceHistoryChart({ query, products = [] }) {
   const [debouncedQuery, setDebouncedQuery] = useState(query || "");
   const [chartError, setChartError] = useState(false);
 
-  // Sync searchInput with query prop
   useEffect(() => {
     if (query && query !== searchInput) {
       setSearchInput(query);
     }
   }, [query]);
 
-  // Debounce search input
   useEffect(() => {
     const timer = setTimeout(() => {
       const trimmed = searchInput.trim();
@@ -354,7 +330,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
     return () => clearTimeout(timer);
   }, [searchInput]);
 
-  // Fetch price history data
   useEffect(() => {
     const trimmed = debouncedQuery?.trim();
 
@@ -379,7 +354,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
           Array.isArray(payload.stores) &&
           Array.isArray(payload.data)
         ) {
-          // Validate data has price variations
           const hasPriceVariation = payload.data.some((row, index) => {
             if (index === 0) return false;
             const prevRow = payload.data[index - 1];
@@ -420,7 +394,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
     };
   }, [debouncedQuery, products]);
 
-  // Calculate display chart
   const displayChart = useMemo(() => {
     if (chart && chart.data && chart.data.length > 0) {
       return chart;
@@ -431,7 +404,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
     return { stores: [], data: [], lowest: null };
   }, [chart, products]);
 
-  // Sync active stores
   useEffect(() => {
     if (!displayChart?.stores?.length) {
       if (activeStores.length > 0) setActiveStores([]);
@@ -454,7 +426,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
     }
   }, [displayChart.stores]);
 
-  // Handle store toggle
   const handleToggleStore = useCallback(
     (store) => {
       setActiveStores((prev) => {
@@ -471,7 +442,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
     [displayChart.stores],
   );
 
-  // Filter valid chart data
   const validChartData = useMemo(() => {
     if (!displayChart?.data) return [];
     return displayChart.data.filter((row) => {
@@ -482,7 +452,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
     });
   }, [displayChart.data, activeStores]);
 
-  // Calculate price statistics
   const allPrices = useMemo(() => {
     return validChartData.flatMap((row) =>
       activeStores
@@ -539,7 +508,6 @@ export default function PriceHistoryChart({ query, products = [] }) {
           transform: translateY(-2px);
           border-color: rgba(255, 255, 255, 0.15) !important;
           background: rgba(255, 255, 255, 0.05) !important;
-          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
         .legend-item:hover {
           transform: scale(1.05);
@@ -551,119 +519,51 @@ export default function PriceHistoryChart({ query, products = [] }) {
         .pulse {
           animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        @media (max-width: 640px) {
-          .chart-card { padding: 16px 14px !important; }
-          .chart-header { flex-direction: column !important; align-items: flex-start !important; }
-          .chart-title { font-size: 18px !important; }
-          .stat-pills { flex-direction: column !important; }
-          .chart-container { padding: 16px 4px 4px !important; }
-        }
       `}</style>
 
-      <div style={{ margin: "0 auto" }}>
-        <div
-          style={{
-            background: "linear-gradient(160deg, #0D1424 0%, #080C17 100%)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: 28,
-            overflow: "hidden",
-            boxShadow:
-              "0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
-          }}
-        >
+      <div className="mx-auto">
+        <div className="overflow-hidden rounded-[24px] border border-[#1d2940] bg-[#111827] shadow-[0_24px_70px_rgba(0,0,0,0.24)]">
           {/* Top gradient bar with store colors */}
           <div
+            className="h-1"
             style={{
-              height: 3,
               background:
                 "linear-gradient(90deg, #FF9900, #2874F0, #4CAF50, #E91E63, #FF5722)",
             }}
           />
 
-          <div className="chart-card" style={{ padding: "32px 36px" }}>
+          <div className="chart-card p-6 sm:p-8">
             {/* Header */}
-            <div
-              className="chart-header"
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
-                marginBottom: 28,
-                flexWrap: "wrap",
-                gap: 16,
-              }}
-            >
+            <div className="chart-header mb-6 flex flex-wrap items-start justify-between gap-4 sm:mb-8">
               <div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    marginBottom: 8,
-                  }}
-                >
+                <div className="mb-3 flex items-center gap-3">
                   <div
+                    className="flex h-10 w-10 items-center justify-center rounded-xl text-xl shadow-lg sm:h-12 sm:w-12 sm:text-2xl"
                     style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 10,
-                      background: "linear-gradient(135deg, #FF9900, #E91E63)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 18,
-                      boxShadow: "0 4px 16px rgba(255,153,0,0.4)",
+                      background: "linear-gradient(135deg, #06B6D4, #0EA5E9)",
+                      boxShadow: "0 8px 24px rgba(6, 182, 212, 0.35)",
                     }}
                   >
                     📈
                   </div>
-                  <h2
-                    className="chart-title"
-                    style={{
-                      fontSize: 22,
-                      fontWeight: 900,
-                      color: "#fff",
-                      letterSpacing: -0.5,
-                    }}
-                  >
+                  <h2 className="chart-title text-xl font-black text-white sm:text-3xl">
                     Price History
                   </h2>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span
-                    style={{
-                      fontSize: 13,
-                      color: "rgba(255,255,255,0.35)",
-                      fontWeight: 600,
-                    }}
-                  >
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-white/50 sm:text-sm">
                     {debouncedQuery ? `"${debouncedQuery}"` : "No product"}
                   </span>
                   <span
-                    className={loading ? "pulse" : ""}
+                    className={`rounded-full px-2.5 py-0.5 text-xs font-black sm:px-3 sm:py-1 ${
+                      loading
+                        ? "pulse border border-amber-400/40 bg-amber-400/15 text-amber-300"
+                        : chartError
+                          ? "border border-red-500/40 bg-red-500/15 text-red-300"
+                          : "border border-emerald-400/40 bg-emerald-400/15 text-emerald-300"
+                    }`}
                     style={{
-                      fontSize: 11,
-                      fontWeight: 800,
-                      color: loading
-                        ? "#FBBF24"
-                        : chartError
-                          ? "#EF4444"
-                          : "#34D399",
-                      letterSpacing: 1,
-                      background: loading
-                        ? "rgba(251,191,36,0.1)"
-                        : chartError
-                          ? "rgba(239,68,68,0.1)"
-                          : "rgba(52,211,153,0.1)",
-                      border: `1px solid ${
-                        loading
-                          ? "rgba(251,191,36,0.25)"
-                          : chartError
-                            ? "rgba(239,68,68,0.25)"
-                            : "rgba(52,211,153,0.25)"
-                      }`,
-                      padding: "2px 8px",
-                      borderRadius: 20,
+                      letterSpacing: "0.08em",
                     }}
                   >
                     {loading ? "LOADING" : chartError ? "FALLBACK" : "LIVE"}
@@ -673,43 +573,21 @@ export default function PriceHistoryChart({ query, products = [] }) {
 
               {/* Store comparison info */}
               <div
+                className="rounded-xl border-2 px-4 py-2.5 text-xs backdrop-blur-sm sm:text-sm"
                 style={{
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  borderRadius: 12,
-                  padding: "8px 14px",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
+                  borderColor: "rgba(6, 182, 212, 0.4)",
+                  background: "rgba(6, 182, 212, 0.1)",
                 }}
               >
-                <span
-                  style={{
-                    fontSize: 11,
-                    color: "rgba(255,255,255,0.4)",
-                    fontWeight: 600,
-                  }}
-                >
-                  Comparing:
-                </span>
-                <span
-                  style={{ fontSize: 11, color: "#FF9900", fontWeight: 800 }}
-                >
+                <span className="text-white/50">Comparing</span>
+                <span className="ml-2 font-black" style={{ color: "#06B6D4" }}>
                   {displayChart.stores.length} stores
                 </span>
               </div>
             </div>
 
             {/* Stats Pills */}
-            <div
-              className="stat-pills"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-                gap: 12,
-                marginBottom: 28,
-              }}
-            >
+            <div className="stat-pills mb-6 grid grid-cols-2 gap-3 sm:mb-8 sm:grid-cols-4 sm:gap-4">
               <StatPill
                 icon="🏆"
                 label="LOWEST PRICE"
@@ -730,24 +608,22 @@ export default function PriceHistoryChart({ query, products = [] }) {
                 icon="📅"
                 label="DATE RECORDED"
                 value={displayChart.lowest?.date || "No date"}
-                color="#E91E63"
+                color="#06B6D4"
               />
               <StatPill
                 icon="📊"
                 label="PRICE SPREAD"
                 value={hasChartData ? formatRupee(priceSpread) : "No data"}
-                color="#FF5722"
+                color="#F59E0B"
               />
             </div>
 
             {/* Chart Container */}
             <div
-              className="chart-container"
+              className="chart-container rounded-[18px] border-2 p-4 sm:p-6"
               style={{
-                background: "#060A14",
-                border: "1px solid rgba(255,255,255,0.05)",
-                borderRadius: 20,
-                padding: "24px 8px 8px",
+                background: "linear-gradient(135deg, #0b111d 0%, #111827 100%)",
+                borderColor: "rgba(255,255,255,0.08)",
                 boxShadow: "inset 0 2px 20px rgba(0,0,0,0.4)",
               }}
             >
@@ -876,27 +752,19 @@ export default function PriceHistoryChart({ query, products = [] }) {
                 </ResponsiveContainer>
               ) : (
                 <div
+                  className="flex h-80 flex-col items-center justify-center gap-3 text-center"
                   style={{
-                    height: 340,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexDirection: "column",
-                    gap: 12,
                     color: "rgba(255,255,255,0.38)",
-                    fontWeight: 800,
-                    textAlign: "center",
-                    padding: 24,
                   }}
                 >
-                  <span style={{ fontSize: 48, opacity: 0.3 }}>📊</span>
-                  <div>
+                  <span className="text-5xl opacity-30">📊</span>
+                  <div className="text-sm font-black sm:text-base">
                     {loading
                       ? "Loading price history..."
                       : error || "Search once to start building price history"}
                   </div>
                   {!loading && products.length > 0 && (
-                    <div style={{ fontSize: 12, opacity: 0.5 }}>
+                    <div className="text-xs opacity-50">
                       Found {products.length} current results
                     </div>
                   )}
@@ -904,94 +772,59 @@ export default function PriceHistoryChart({ query, products = [] }) {
               )}
 
               {hasChartData && (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-                    gap: 10,
-                    marginTop: 20,
-                    padding: "16px 0",
-                  }}
-                >
+                <div className="mt-5 grid grid-cols-2 gap-3 border-t border-[#27344d] pt-5 sm:grid-cols-4 sm:gap-4 sm:pt-6">
                   {displayChart.stores.map((store) => {
                     const color = getStoreColor(store);
                     const isActive = activeStores.includes(store);
                     return (
-                      <div
+                      <motion.div
                         key={store}
                         onClick={() => handleToggleStore(store)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`flex flex-col items-center gap-2.5 rounded-[16px] border-2 px-3 py-3 transition cursor-pointer sm:px-4 sm:py-4`}
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          gap: 8,
-                          padding: "12px",
-                          borderRadius: 12,
-                          background: isActive
-                            ? `linear-gradient(135deg, ${color.gradient[0]}22, ${color.gradient[1]}22)`
-                            : "rgba(255,255,255,0.02)",
-                          border: `2px solid ${isActive ? color.line : "rgba(255,255,255,0.1)"}`,
-                          cursor: "pointer",
-                          transition: "all 0.3s ease",
-                          opacity: isActive ? 1 : 0.4,
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = isActive
-                            ? `linear-gradient(135deg, ${color.gradient[0]}33, ${color.gradient[1]}33)`
-                            : "rgba(255,255,255,0.05)";
-                          e.currentTarget.style.borderColor = color.line;
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = isActive
-                            ? `linear-gradient(135deg, ${color.gradient[0]}22, ${color.gradient[1]}22)`
-                            : "rgba(255,255,255,0.02)";
-                          e.currentTarget.style.borderColor = isActive
+                          borderColor: isActive
                             ? color.line
-                            : "rgba(255,255,255,0.1)";
+                            : "rgba(255,255,255,0.1)",
+                          background: isActive
+                            ? `${color.line}20`
+                            : "rgba(255,255,255,0.02)",
+                          opacity: isActive ? 1 : 0.5,
                         }}
                       >
-                        <span style={{ fontSize: 24 }}>{color.icon}</span>
+                        <span className="text-2xl sm:text-3xl">
+                          {color.icon}
+                        </span>
                         <span
+                          className="text-center text-xs font-black sm:text-sm"
                           style={{
-                            fontSize: 11,
-                            fontWeight: 800,
                             color: isActive
                               ? color.line
                               : "rgba(255,255,255,0.5)",
-                            textAlign: "center",
                           }}
                         >
                           {store}
                         </span>
                         <div
+                          className="h-2 w-2 rounded-full sm:h-2.5 sm:w-2.5"
                           style={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: "50%",
                             background: color.line,
                             opacity: isActive ? 1 : 0.3,
                             boxShadow: isActive
-                              ? `0 0 8px ${color.line}`
+                              ? `0 0 12px ${color.line}80`
                               : "none",
                           }}
                         />
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
               )}
-              <div style={{ height: 16 }} />
+              <div className="h-4" />
             </div>
 
-            <p
-              style={{
-                fontSize: 11,
-                color: "rgba(255,255,255,0.2)",
-                textAlign: "center",
-                marginTop: 16,
-                fontWeight: 600,
-              }}
-            >
+            <p className="mt-4 text-center text-xs font-semibold text-white/30 sm:mt-6">
               {chartError
                 ? "⚠️ Showing current prices (history unavailable)"
                 : `Comparing prices across 5 major stores • ${validChartData.length} data points`}

@@ -37,7 +37,6 @@ const INDIA_STORE_PATTERNS = [
   /boat/i,
   /zebronics/i,
   /noise/i,
-  // ✅ NEW: Added more Indian retailers
   /shopsy/i,
   /smartprix/i,
   /byjus/i,
@@ -117,7 +116,6 @@ const queryTokens = (query) =>
     .split(" ")
     .filter((token) => token.length > 1 && !QUERY_STOPWORDS.has(token) && !/^\d{4,6}$/.test(token));
 
-// ✅ RELAXED: Dropped threshold from 0.7 → 0.5, and 1-token queries always pass
 const isRelevantToQuery = (item, query) => {
   const tokens = queryTokens(query);
   if (tokens.length === 0) return true;
@@ -125,8 +123,8 @@ const isRelevantToQuery = (item, query) => {
   const title = normalizeText(item.title || "");
   const matched = tokens.filter((token) => title.includes(token));
 
-  if (tokens.length <= 2) return matched.length >= 1;       // At least 1 token matches
-  return matched.length / tokens.length >= 0.5;             // 50% match (was 70%)
+  if (tokens.length <= 2) return matched.length >= 1;       
+  return matched.length / tokens.length >= 0.5;             
 };
 
 const getHostname = (value = "") => {
@@ -139,7 +137,6 @@ const getHostname = (value = "") => {
 
 const isGoogleHost = (host = "") => /(^|\.)google\./i.test(host);
 
-// ✅ RELAXED: Also accept .in TLD on the link itself even without store-pattern match
 const isIndiaStore = (item) => {
   const linkHost = getHostname(item.link);
   const productHost = getHostname(item.product_link);

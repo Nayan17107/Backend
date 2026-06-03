@@ -22,7 +22,6 @@ const formatChartDate = (date) => {
   return `${day} ${month}`;
 };
 
-// Only track these specific stores
 const ALLOWED_STORES = [
   "amazon",
   "flipkart",
@@ -44,7 +43,7 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const dayKeyOf = (d) => {
   const dt = new Date(d);
   dt.setHours(0, 0, 0, 0);
-  return dt.getTime(); // stable numeric day key
+  return dt.getTime(); 
 };
 
 const getPriceHistoryChart = async (req, res, next) => {
@@ -68,16 +67,13 @@ const getPriceHistoryChart = async (req, res, next) => {
       return res.status(400).json({ message: "Query parameter is required" });
     }
 
-    // Chart window start
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
 
-    // Fetch more data for LOCF continuity (buffer before chart window)
     const fetchBufferDays = 30;
     const fetchStartDate = new Date();
     fetchStartDate.setDate(fetchStartDate.getDate() - fetchBufferDays);
 
-    // Base regex used for exact/partial match
     const exactRegex = `^${escapeRegex(query)}$`;
     const partialRegex = escapeRegex(query);
 
@@ -88,7 +84,6 @@ const getPriceHistoryChart = async (req, res, next) => {
 
     let historyDocs = historyDocsExact;
 
-    // If no exact matches, try partial matches (pick query with most points)
     if (!historyDocs || historyDocs.length === 0) {
       const partialDocs = await PriceHistory.find({
         productQuery: { $regex: partialRegex, $options: "i" },
@@ -125,8 +120,7 @@ const getPriceHistoryChart = async (req, res, next) => {
       });
     }
 
-    // Deduplicate to one price per (store, day)
-    const dayPriceMap = {}; // store -> Map(dayKey -> {price, recordedAt})
+    const dayPriceMap = {};
 
     let lowestPrice = Number.MAX_SAFE_INTEGER;
     let lowestStore = "";
@@ -143,7 +137,7 @@ const getPriceHistoryChart = async (req, res, next) => {
       const storeDayMap = dayPriceMap[store];
 
       const existing = storeDayMap.get(dKey);
-      // keep latest recordedAt of that day
+
       if (!existing || doc.recordedAt >= existing.recordedAt) {
         storeDayMap.set(dKey, { price: doc.price, recordedAt: doc.recordedAt });
       }
@@ -155,14 +149,12 @@ const getPriceHistoryChart = async (req, res, next) => {
       }
     });
 
-    // Materialize storeData sorted by date
     let storeData = {};
     Object.entries(dayPriceMap).forEach(([store, map]) => {
       const entries = Array.from(map.entries())
         .map(([dKey, v]) => ({ date: new Date(Number(dKey)), price: v.price }))
         .sort((a, b) => a.date - b.date);
 
-      // remove consecutive duplicates
       const deduped = [];
       for (const e of entries) {
         const last = deduped[deduped.length - 1];
@@ -182,7 +174,6 @@ const getPriceHistoryChart = async (req, res, next) => {
       });
     }
 
-    // Determine actual chart start (use later of requested start or first record)
     const allDates = [];
     stores.forEach((store) => {
       storeData[store].forEach((entry) => {
@@ -195,7 +186,6 @@ const getPriceHistoryChart = async (req, res, next) => {
       Math.max(startDate.getTime(), firstRecordDate.getTime()),
     );
 
-    // Generate daily dates between chartStartDate and today
     const sortedDates = [];
     const tempDate = new Date(chartStartDate);
     const today = new Date();
@@ -207,7 +197,6 @@ const getPriceHistoryChart = async (req, res, next) => {
       tempDate.setDate(tempDate.getDate() + 1);
     }
 
-    // Build chart series using LOCF
     const chartData = [];
     const storePointers = {};
     const lastKnownPrices = {};
@@ -241,7 +230,6 @@ const getPriceHistoryChart = async (req, res, next) => {
       if (hasAnyPrice) chartData.push(row);
     });
 
-    // Remove duplicate consecutive rows
     const filteredChartData = [];
     for (let i = 0; i < chartData.length; i++) {
       const currentRow = chartData[i];
@@ -267,7 +255,6 @@ const getPriceHistoryChart = async (req, res, next) => {
       }
     }
 
-    // Ensure at least 2 points
     if (filteredChartData.length < 2 && chartData.length >= 2) {
       filteredChartData.length = 0;
       filteredChartData.push(chartData[0]);

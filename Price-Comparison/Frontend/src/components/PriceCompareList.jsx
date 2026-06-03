@@ -51,18 +51,41 @@ const PriceCompareList = ({ products = [] }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2, duration: 0.4 }}
-      className="mt-4 max-w-full overflow-hidden rounded-[24px] border border-[#1d2940] bg-[#111827] p-4 sm:p-6"
+      className="mt-4 max-w-full overflow-hidden rounded-[24px] border border-[#1d2940] bg-[#111827] p-4 sm:p-8"
+      style={{
+        boxShadow: "0 24px 70px rgba(0,0,0,0.24)",
+      }}
     >
-      <div className="mb-6">
-        <h2 className="font-heading text-xl font-black text-white sm:text-2xl">
-          Compare Prices Across Stores
-        </h2>
-        <p className="mt-2 text-sm font-semibold text-white/40">
-          Updated just now
+      {/* Top gradient bar with store colors */}
+      <div
+        className="h-1.5 -mx-4 -mt-4 sm:-mx-8 sm:-mt-8 mb-6 sm:mb-8 rounded-t-[24px]"
+        style={{
+          background:
+            "linear-gradient(90deg, #FF9900, #2874F0, #4CAF50, #E91E63, #FF5722)",
+        }}
+      />
+
+      <div className="mb-6 sm:mb-8">
+        <div className="mb-3 flex items-center gap-3">
+          <div
+            className="flex h-10 w-10 items-center justify-center rounded-xl text-xl shadow-lg sm:h-12 sm:w-12 sm:text-2xl"
+            style={{
+              background: "linear-gradient(135deg, #34D399, #10B981)",
+              boxShadow: "0 8px 24px rgba(52, 211, 153, 0.35)",
+            }}
+          >
+            🛒
+          </div>
+          <h2 className="font-heading text-xl font-black text-white sm:text-3xl">
+            Compare Prices Across Stores
+          </h2>
+        </div>
+        <p className="mt-2 text-xs text-white/50 sm:text-sm">
+          ✓ Updated just now • {products.length} results found
         </p>
       </div>
 
-      <div className="no-scrollbar max-h-[600px] space-y-3 overflow-y-auto pr-1">
+      <div className="no-scrollbar max-h-[600px] space-y-2.5 overflow-y-auto pr-2 sm:space-y-3">
         {priceList.map((product, index) => {
           const store = getStoreMeta(product.source);
           const price = product.numericPrice || priceNumber(product.price);
@@ -78,11 +101,14 @@ const PriceCompareList = ({ products = [] }) => {
               transition={{ delay: index * 0.05, duration: 0.28 }}
               whileHover={{ y: -3, scale: 1.01 }}
               whileTap={{ scale: 0.99 }}
-              className={`grid gap-4 rounded-[20px] border p-4 transition sm:grid-cols-[72px_minmax(0,1fr)_auto] sm:items-center sm:gap-x-5 sm:p-5 ${
+              className={`grid gap-3 rounded-[18px] border-2 p-4 transition sm:grid-cols-[80px_minmax(0,1fr)_auto] sm:items-center sm:gap-x-5 sm:p-5 ${
                 isBest
-                  ? "border-emerald-400/40 bg-emerald-400/5"
-                  : "border-[#27344d] bg-[#182131]"
+                  ? "border-emerald-400/50 bg-emerald-400/10"
+                  : "border-[#27344d]/50 bg-[#182131]/50"
               }`}
+              style={{
+                borderColor: isBest ? "#34D399" : undefined,
+              }}
             >
               <StoreLogo store={store} />
 
@@ -100,14 +126,17 @@ const PriceCompareList = ({ products = [] }) => {
                         stiffness: 380,
                         damping: 16,
                       }}
-                      className="inline-flex min-h-8 items-center gap-1 rounded-full bg-gradient-to-r from-emerald-400 to-green-500 px-4 text-xs font-black text-white shadow-lg shadow-emerald-500/30"
+                      className="inline-flex min-h-8 items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-400 to-green-500 px-4 py-1.5 text-xs font-black text-white shadow-lg"
+                      style={{
+                        boxShadow: "0 8px 24px rgba(52, 211, 153, 0.35)",
+                      }}
                     >
-                      <span className="text-amber-200">{"\u26A1"}</span>
-                      BEST
+                      <span className="text-lg">{"⚡"}</span>
+                      BEST PRICE
                     </motion.span>
                   )}
                   {product.discount && !isBest && (
-                    <span className="inline-flex min-h-8 items-center rounded-full border border-blue-400/30 bg-blue-500/20 px-3 text-xs font-black text-blue-300">
+                    <span className="inline-flex min-h-8 items-center rounded-full border border-amber-400/40 bg-amber-400/15 px-3 py-1 text-xs font-black text-amber-300">
                       {product.discount}
                     </span>
                   )}
@@ -148,19 +177,19 @@ const PriceCompareList = ({ products = [] }) => {
                   href={product.url}
                   target="_blank"
                   rel="noreferrer"
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.96 }}
-                  className={`flex min-h-[56px] w-full shrink-0 items-center justify-center gap-2 rounded-2xl px-6 font-black text-white transition sm:w-[138px] ${
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className={`flex min-h-[48px] w-full shrink-0 items-center justify-center gap-2 rounded-[14px] px-4 text-xs font-black transition sm:w-[130px] sm:min-h-[56px] sm:rounded-2xl sm:px-6 sm:text-sm ${
                     product.inStock === false
-                      ? "cursor-not-allowed border border-red-400/30 bg-red-500/20"
-                      : "bg-gradient-to-r from-purple-500 to-[#242b47] shadow-[0_16px_34px_rgba(124,58,237,0.24)] hover:shadow-purple-500/30"
+                      ? "cursor-not-allowed border-2 border-red-500/40 bg-red-500/15 text-red-300"
+                      : "border-2 border-cyan-400/40 bg-cyan-400/15 text-cyan-300 hover:border-cyan-400/60 hover:bg-cyan-400/25"
                   }`}
                 >
                   <span>
                     {product.inStock === false ? "Out of Stock" : "Buy Now"}
                   </span>
                   {product.inStock !== false && (
-                    <span className="text-lg">{"\u2192"}</span>
+                    <span className="text-base">{"→"}</span>
                   )}
                 </motion.a>
               </div>
