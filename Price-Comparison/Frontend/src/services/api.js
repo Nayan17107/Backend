@@ -1,9 +1,9 @@
 import axios from "axios";
 
-const API_BASE_URL = ("https://price-comparison-backend-pxez.onrender.com" || "http://localhost:5000").replace(/\/$/, "");
+const API_BASE_URL = "https://price-comparison-backend-pxez.onrender.com";
 
 const api = axios.create({
-  baseURL: `https://price-comparison-backend-pxez.onrender.com/api`,
+  baseURL: `${API_BASE_URL}/api`,
   timeout: 20000
 });
 
