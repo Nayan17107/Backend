@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
@@ -14,10 +15,21 @@ const pageVariants = {
 
 const App = () => {
   const location = useLocation();
+  const [theme, setTheme] = useState(() => localStorage.getItem("pricepulse-theme") || "dark");
+  const isLight = theme === "light";
+
+  useEffect(() => {
+    localStorage.setItem("pricepulse-theme", theme);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((current) => (current === "dark" ? "light" : "dark"));
+  };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-ink font-body text-white">
-      <Navbar />
+    <div className={`${isLight ? "theme-light" : "theme-dark"} min-h-screen overflow-x-hidden bg-ink font-body text-white`}>
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
       <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname + location.search}
