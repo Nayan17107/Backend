@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://price-comparison-backend-pxez.onrender.com";
+const API_BASE_URL = "https://price-pulse-prajapatinayan17107.vercel.app";
 
 const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
